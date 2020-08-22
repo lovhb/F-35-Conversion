@@ -12,19 +12,34 @@ namespace F_35_Conversion
 
         private void Awake()
         {
-            SceneManager.sceneLoaded += SceneLoaded;
+            VTOLAPI.SceneLoaded += Loaded;
+            VTOLAPI.MissionReloaded += Reloaded;
         }
 
-        private void SceneLoaded(Scene arg0, LoadSceneMode arg1)
+        private void Reloaded()
         {
-            string sceneName = arg0.name;
+            Loaded(VTOLAPI.currentScene);
+        }
+
+        private void Loaded(VTOLScenes scene)
+        {
+            if (VTOLAPI.GetPlayersVehicleEnum() == VTOLVehicles.F45A)
+            {
+                switch (scene)
+                {
+                    case VTOLScenes.Akutan:
+                    case VTOLScenes.CustomMapBase:
+                        Convert();
+                        break;
+                }
+            }
             if ((sceneName == "CustomMapBase" || sceneName == "Akutan") && VTOLAPI.GetPlayersVehicleEnum() == VTOLVehicles.F45A)
             {
                 StartCoroutine(waiter());
             }
         }
 
-        private void convert()
+        private void Convert()
         {
             if ()
             {

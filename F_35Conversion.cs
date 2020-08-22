@@ -3,7 +3,6 @@ using UnityEngine.SceneManagement;
 
 namespace F_35_Conversion
 {
-    // Todo: Add postpatch to VTMapManager.RestartCurrentScenario to keep modded F-45 after mission restart
     // Todo: Improve F-35 model
     class F_35Conversion : VTOLMOD
     {

@@ -32,31 +32,23 @@ namespace F_35_Conversion
                         break;
                 }
             }
-            if ((sceneName == "CustomMapBase" || sceneName == "Akutan") && VTOLAPI.GetPlayersVehicleEnum() == VTOLVehicles.F45A)
-            {
-                StartCoroutine(waiter());
-            }
         }
 
         private void Convert()
         {
-            if ()
-            {
+            GameObject currentVehicle = VTOLAPI.GetPlayersVehicleGameObject();
 
-                GameObject currentVehicle = VTOLAPI.GetPlayersVehicleGameObject();
+            leftCanard = currentVehicle.transform.Find("sevtf_layer_2/CanardLeftPart");
+            rightCanard = currentVehicle.transform.Find("sevtf_layer_2/CanardRightPart");
 
-                leftCanard = currentVehicle.transform.Find("sevtf_layer_2/CanardLeftPart");
-                rightCanard = currentVehicle.transform.Find("sevtf_layer_2/CanardRightPart");
+            leftCanard.localPosition = new Vector3(0.855f, 1.12f, 7.907f);
+            leftCanard.Rotate(0f, 6.03f, 0f, Space.Self);
 
-                leftCanard.localPosition = new Vector3(0.855f, 1.12f, 7.907f);
-                leftCanard.Rotate(0f, 6.03f, 0f, Space.Self);
+            rightCanard.localPosition = new Vector3(-0.855f, 1.12f, 7.907f);
+            rightCanard.Rotate(0f, -6.03f, 0f, Space.Self);
 
-                rightCanard.localPosition = new Vector3(-0.855f, 1.12f, 7.907f);
-                rightCanard.Rotate(0f, -6.03f, 0f, Space.Self);
-
-                leftCanard.Find("canardLeft").localPosition = new Vector3(0f, -0.926f, 0f);
-                rightCanard.Find("canardRight").localPosition = new Vector3(0f, -0.926f, 0f);
-            }
+            leftCanard.Find("canardLeft").localPosition = new Vector3(0f, -0.926f, 0f);
+            rightCanard.Find("canardRight").localPosition = new Vector3(0f, -0.926f, 0f);
         }
     }
 }

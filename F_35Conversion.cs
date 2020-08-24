@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace F_35_Conversion
@@ -6,7 +7,6 @@ namespace F_35_Conversion
     // Todo: Improve F-35 model
     class F_35Conversion : VTOLMOD
     {
-        private VTOLAPI api;
         private Transform leftCanard, rightCanard;
 
         private void Awake()
@@ -20,6 +20,17 @@ namespace F_35_Conversion
             Loaded(VTOLAPI.currentScene);
         }
 
+        private IEnumerator WaitForScenarioReady()
+        {
+            while (VTMapManager.fetch == null || !VTMapManager.fetch.scenarioReady)
+            {
+                Debug.Log("Waiting");
+                yield return null;
+            }
+
+            Convert();
+        }
+
         private void Loaded(VTOLScenes scene)
         {
             if (VTOLAPI.GetPlayersVehicleEnum() == VTOLVehicles.F45A)
@@ -28,7 +39,7 @@ namespace F_35_Conversion
                 {
                     case VTOLScenes.Akutan:
                     case VTOLScenes.CustomMapBase:
-                        Convert();
+                        StartCoroutine(WaitForScenarioReady());
                         break;
                 }
             }

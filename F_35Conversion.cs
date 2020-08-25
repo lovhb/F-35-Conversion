@@ -24,7 +24,6 @@ namespace F_35_Conversion
         {
             while (VTMapManager.fetch == null || !VTMapManager.fetch.scenarioReady)
             {
-                Debug.Log("Waiting");
                 yield return null;
             }
 
@@ -65,10 +64,6 @@ namespace F_35_Conversion
             rightCanard.localPosition = new Vector3(-1.01f, 1.12f, 8.16f);
             rightCanard.Rotate(0f, 0f, -4.679f, Space.Self);
             rightCanard.localScale = new Vector3(1.615172f, 1.488211f, 1f);
-
-
-            //leftCanard.Find("canardLeft").localPosition = new Vector3(0f, -0.926f, 0f);
-            //rightCanard.Find("canardRight").localPosition = new Vector3(0f, -0.926f, 0f);
         }
 
         private void ModifyCanardRotation(GameObject currentVehicle)
@@ -79,8 +74,13 @@ namespace F_35_Conversion
                 AeroController.ControlSurfaceTransform canardLeft = aeroController.controlSurfaces[0];
                 AeroController.ControlSurfaceTransform canardRight = aeroController.controlSurfaces[1];
 
-                canardLeft.axis = new Vector3(-1f, 0f, 0f);
-                canardRight.axis = new Vector3(-1f, 0f, 0f);
+                canardLeft.pitchFactor /= -1f;
+                canardLeft.brakeFactor /= -1f;
+                canardLeft.flapsFactor /= -1f;
+
+                canardRight.pitchFactor /= -1f;
+                canardRight.brakeFactor /= -1f;
+                canardRight.flapsFactor /= -1f;
             }
         }
     }

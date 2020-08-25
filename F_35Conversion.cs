@@ -48,6 +48,12 @@ namespace F_35_Conversion
         private void Convert()
         {
             GameObject currentVehicle = VTOLAPI.GetPlayersVehicleGameObject();
+            MoveCanards(currentVehicle);
+            ModifyCanardRotation(currentVehicle);
+        }
+
+        private void MoveCanards(GameObject currentVehicle)
+        {
 
             leftCanard = currentVehicle.transform.Find("sevtf_layer_2/CanardLeftPart");
             rightCanard = currentVehicle.transform.Find("sevtf_layer_2/CanardRightPart");
@@ -60,6 +66,19 @@ namespace F_35_Conversion
 
             leftCanard.Find("canardLeft").localPosition = new Vector3(0f, -0.926f, 0f);
             rightCanard.Find("canardRight").localPosition = new Vector3(0f, -0.926f, 0f);
+        }
+
+        private void ModifyCanardRotation(GameObject currentVehicle)
+        {
+            AeroController aeroController = currentVehicle.GetComponent<AeroController>();
+            if (aeroController != null)
+            {
+                AeroController.ControlSurfaceTransform canardLeft = aeroController.controlSurfaces[0];
+                AeroController.ControlSurfaceTransform canardRight = aeroController.controlSurfaces[1];
+
+                canardLeft.axis = new Vector3(-1f, 0f, 0f);
+                canardRight.axis = new Vector3(-1f, 0f, 0f);
+            }
         }
     }
 }

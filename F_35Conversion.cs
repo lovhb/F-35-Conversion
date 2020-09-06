@@ -4,10 +4,9 @@ using UnityEngine.SceneManagement;
 
 namespace F_35_Conversion
 {
-    // Todo: Improve F-35 model
     class F_35Conversion : VTOLMOD
     {
-        private Transform leftCanard, rightCanard;
+        private Transform leftCanard, rightCanard, leftCanardAero, rightCanardAero;
 
         private void Awake()
         {
@@ -53,7 +52,6 @@ namespace F_35_Conversion
 
         private void MoveCanards(GameObject currentVehicle)
         {
-
             leftCanard = currentVehicle.transform.Find("sevtf_layer_2/CanardLeftPart");
             rightCanard = currentVehicle.transform.Find("sevtf_layer_2/CanardRightPart");
 
@@ -74,14 +72,25 @@ namespace F_35_Conversion
                 AeroController.ControlSurfaceTransform canardLeft = aeroController.controlSurfaces[0];
                 AeroController.ControlSurfaceTransform canardRight = aeroController.controlSurfaces[1];
 
-                canardLeft.pitchFactor /= -1f;
-                canardLeft.brakeFactor /= -1f;
-                canardLeft.flapsFactor /= -1f;
+                //canardLeft.pitchFactor = 0.5f;
+                canardLeft.axis = new Vector3(-1, 0, 0);
 
-                canardRight.pitchFactor /= -1f;
-                canardRight.brakeFactor /= -1f;
-                canardRight.flapsFactor /= -1f;
+                //canardRight.pitchFactor = 0.5f;
+                canardRight.axis = new Vector3(-1, 0, 0);
+                //canardRight.brakeFactor = -0.08f;
+                //canardRight.flapsFactor = -0.15f;
+                //canardRight.AoAFactor = 0;
+
             }
+
+            leftCanardAero = currentVehicle.transform.Find("sevtf_layer_2/CanardLeftPart/canardLeft/canardLeft_model/leftCanardAero");
+            rightCanardAero = currentVehicle.transform.Find("sevtf_layer_2/CanardRightPart/canardRight/canardRight_model/rightCanardAero");
+
+            Wing leftWing = leftCanardAero.GetComponent<Wing>();
+            Wing rightWing = rightCanardAero.GetComponent<Wing>();
+
+            //leftWing.liftCoefficient = -0.26f;
+            //rightWing.liftCoefficient = -0.26f;
         }
     }
 }

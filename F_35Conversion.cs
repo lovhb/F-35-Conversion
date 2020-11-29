@@ -1,4 +1,6 @@
 ﻿using System.Collections;
+using System.Reflection;
+using Harmony;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -10,9 +12,19 @@ namespace F_35_Conversion
 
         private void Awake()
         {
-            VTOLAPI.SceneLoaded += Loaded;
-            VTOLAPI.MissionReloaded += Reloaded;
+            Debug.Log("STARTED F-35");
+            Patch();
+            // VTOLAPI.SceneLoaded += Loaded;
+            // VTOLAPI.MissionReloaded += Reloaded;
         }
+
+        private static void Patch()
+        {
+            HarmonyInstance harmony = HarmonyInstance.Create("Ketkev.F35");
+
+            harmony.PatchAll(Assembly.GetExecutingAssembly());
+        }
+
 
         private void Reloaded()
         {
@@ -46,8 +58,8 @@ namespace F_35_Conversion
         private void Convert()
         {
             GameObject currentVehicle = VTOLAPI.GetPlayersVehicleGameObject();
-            MoveCanards(currentVehicle);
-            ModifyCanardRotation(currentVehicle);
+            // MoveCanards(currentVehicle);
+            // ModifyCanardRotation(currentVehicle);
         }
 
         private void MoveCanards(GameObject currentVehicle)
@@ -80,11 +92,14 @@ namespace F_35_Conversion
                 //canardRight.brakeFactor = -0.08f;
                 //canardRight.flapsFactor = -0.15f;
                 //canardRight.AoAFactor = 0;
-
             }
 
-            leftCanardAero = currentVehicle.transform.Find("sevtf_layer_2/CanardLeftPart/canardLeft/canardLeft_model/leftCanardAero");
-            rightCanardAero = currentVehicle.transform.Find("sevtf_layer_2/CanardRightPart/canardRight/canardRight_model/rightCanardAero");
+            leftCanardAero =
+                currentVehicle.transform.Find(
+                    "sevtf_layer_2/CanardLeftPart/canardLeft/canardLeft_model/leftCanardAero");
+            rightCanardAero =
+                currentVehicle.transform.Find(
+                    "sevtf_layer_2/CanardRightPart/canardRight/canardRight_model/rightCanardAero");
 
             Wing leftWing = leftCanardAero.GetComponent<Wing>();
             Wing rightWing = rightCanardAero.GetComponent<Wing>();

@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>F_35_Conversion</RootNamespace>
     <AssemblyName>F-35-Conversion</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
@@ -56,7 +56,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="F_35Conversion.cs" />
+    <Compile Include="Main.cs" />
     <Compile Include="Patches\ControlSurfacePatches.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

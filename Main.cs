@@ -1,16 +1,23 @@
+using System.IO;
 using System.Reflection;
-using Harmony;
+using HarmonyLib;
+using ModLoader;
+using ModLoader.Framework;
+using ModLoader.Framework.Attributes;
 
 namespace F35Conversion
 {
-    public class Main : VTOLMOD
+    [ItemId("ketkev.F35Convertion")]
+    public class Main : VtolMod
     {
-        public override void ModLoaded()
+        public string ModFolder;
+        private void Awake()
         {
-            var harmony = HarmonyInstance.Create("Ketkev.F35");
-
-            harmony.PatchAll(Assembly.GetExecutingAssembly());
-            base.ModLoaded();
+            ModFolder = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        }
+        public override void UnLoad()
+        {
+            // Unloaded
         }
     }
 }

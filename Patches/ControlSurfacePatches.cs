@@ -1,5 +1,10 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using UnityEngine;
+using VTOLAPI;
+using System;
+using System.Reflection;
+using ModLoader;
+using ModLoader.Framework;
 
 namespace F35Conversion.Patches
 {
@@ -8,86 +13,102 @@ namespace F35Conversion.Patches
     {
         static bool Prefix(AeroController.ControlSurfaceTransform __instance)
         {
-            if (__instance.transform == null || (!__instance.transform.root.GetComponent<Actor>().isPlayer &&
-                                                 __instance.transform.root.GetComponent<Actor>().team == Teams.Enemy))
+            Debug.Log("Prefix called for: " + __instance.transform.name);
+
+            if (__instance.transform == null)
+            {
+                Debug.Log("Transform is null");
                 return true;
+            }
+
+            var actor = __instance.transform.root.GetComponent<Actor>();
+            if (actor == null)
+            {
+                Debug.Log("Actor is null");
+                return true;
+            }
+
+            if (!actor.isPlayer && actor.team == Teams.Enemy)
+            {
+                Debug.Log("Actor is not player and is enemy");
+                return true;
+            }
 
             switch (__instance.transform.name)
             {
                 case "canardLeft":
-                {
-                    var leftCanard = __instance.transform.parent;
-
-                    _fakeLeftCan = GameObject.Instantiate(leftCanard.gameObject, leftCanard.parent, true);
-                    _fakeLeftCan.transform.name = "FakeCanardLeft";
-
-                    _fakeLeftCan.transform.localPosition = leftCanard.transform.localPosition;
-                    _fakeLeftCan.transform.localRotation = leftCanard.transform.localRotation;
-                    _fakeLeftCan.transform.localScale = leftCanard.transform.localScale;
-
-                    _fakeLeftCan.transform.localPosition = new Vector3(1.01f, 1.12f, 8.16f);
-                    _fakeLeftCan.transform.Rotate(0f, 0f, 4.679f, Space.Self);
-                    _fakeLeftCan.transform.localScale = new Vector3(1.615172f, 1.488211f, 1f);
-
-                    foreach (Wing w in _fakeLeftCan.GetComponentsInChildren<Wing>(true))
                     {
-                        Destroy(w);
+                        Debug.Log("Processing canardLeft");
+                        var leftCanard = __instance.transform.parent;
+
+                        _fakeLeftCan = GameObject.Instantiate(leftCanard.gameObject, leftCanard.parent, true);
+                        _fakeLeftCan.transform.name = "FakeCanardLeft";
+
+                        _fakeLeftCan.transform.localPosition = leftCanard.transform.localPosition;
+                        _fakeLeftCan.transform.localRotation = leftCanard.transform.localRotation;
+                        _fakeLeftCan.transform.localScale = leftCanard.transform.localScale;
+
+                        _fakeLeftCan.transform.localPosition = new Vector3(1.01f, 1.12f, 8.16f);
+                        _fakeLeftCan.transform.Rotate(0f, 0f, 4.679f, Space.Self);
+                        _fakeLeftCan.transform.localScale = new Vector3(1.615172f, 1.488211f, 1f);
+
+                        foreach (Wing w in _fakeLeftCan.GetComponentsInChildren<Wing>(true))
+                        {
+                            Destroy(w);
+                        }
+
+                        CreateControlSurface(
+                            VTAPI.GetPlayersVehicleGameObject().GetComponentInChildren<AeroController>(true),
+                            _fakeLeftCan.transform, __instance);
+
+                        var meshes = leftCanard.GetComponentsInChildren<MeshRenderer>();
+
+                        foreach (var mesh in meshes)
+                        {
+                            mesh.enabled = false;
+                        }
+
+                        Debug.Log("F35 - Copied left");
+                        break;
                     }
-
-                    CreateControlSurface(
-                        VTOLAPI.GetPlayersVehicleGameObject().GetComponentInChildren<AeroController>(true),
-                        _fakeLeftCan.transform, __instance);
-
-
-                    var meshes = leftCanard.GetComponentsInChildren<MeshRenderer>();
-
-                    foreach (var mesh in meshes)
-                    {
-                        mesh.enabled = false;
-                    }
-
-                    Debug.Log("F35 - Copied left");
-                    break;
-                }
                 case "canardRight":
-                {
-                    var rightCanard = __instance.transform.parent;
-
-                    _fakeRightCan = GameObject.Instantiate(rightCanard.gameObject, rightCanard.parent, true);
-                    _fakeRightCan.transform.name = "fakeCanardRight";
-
-                    _fakeRightCan.transform.localPosition = rightCanard.transform.localPosition;
-                    _fakeRightCan.transform.localRotation = rightCanard.transform.localRotation;
-                    _fakeRightCan.transform.localScale = rightCanard.transform.localScale;
-
-                    _fakeRightCan.transform.localPosition = new Vector3(-1.01f, 1.12f, 8.16f);
-                    _fakeRightCan.transform.Rotate(0f, 0f, -4.679f, Space.Self);
-                    _fakeRightCan.transform.localScale = new Vector3(1.615172f, 1.488211f, 1f);
-
-                    _fakeRightCan.transform.localPosition = new Vector3(-1.01f, 1.12f, 8.16f);
-                    _fakeRightCan.transform.Rotate(0f, 0f, -4.679f, Space.Self);
-                    _fakeRightCan.transform.localScale = new Vector3(1.615172f, 1.488211f, 1f);
-
-
-                    foreach (var w in _fakeRightCan.GetComponentsInChildren<Wing>(true))
                     {
-                        Destroy(w);
+                        Debug.Log("Processing canardRight");
+                        var rightCanard = __instance.transform.parent;
+
+                        _fakeRightCan = GameObject.Instantiate(rightCanard.gameObject, rightCanard.parent, true);
+                        _fakeRightCan.transform.name = "fakeCanardRight";
+
+                        _fakeRightCan.transform.localPosition = rightCanard.transform.localPosition;
+                        _fakeRightCan.transform.localRotation = rightCanard.transform.localRotation;
+                        _fakeRightCan.transform.localScale = rightCanard.transform.localScale;
+
+                        _fakeRightCan.transform.localPosition = new Vector3(-1.01f, 1.12f, 8.16f);
+                        _fakeRightCan.transform.Rotate(0f, 0f, -4.679f, Space.Self);
+                        _fakeRightCan.transform.localScale = new Vector3(1.615172f, 1.488211f, 1f);
+
+                        foreach (var w in _fakeRightCan.GetComponentsInChildren<Wing>(true))
+                        {
+                            Destroy(w);
+                        }
+
+                        CreateControlSurface(
+                            VTAPI.GetPlayersVehicleGameObject().GetComponentInChildren<AeroController>(true),
+                            _fakeRightCan.transform, __instance);
+
+                        var meshes = rightCanard.GetComponentsInChildren<MeshRenderer>();
+
+                        foreach (var mesh in meshes)
+                        {
+                            mesh.enabled = false;
+                        }
+
+                        Debug.Log("F35 - Copied right");
+                        break;
                     }
-
-                    CreateControlSurface(
-                        VTOLAPI.GetPlayersVehicleGameObject().GetComponentInChildren<AeroController>(true),
-                        _fakeRightCan.transform, __instance);
-
-                    var meshes = rightCanard.GetComponentsInChildren<MeshRenderer>();
-
-                    foreach (var mesh in meshes)
-                    {
-                        mesh.enabled = false;
-                    }
-
-                    Debug.Log("F35 - Copied right");
+                default:
+                    Debug.Log("Unhandled transform name: " + __instance.transform.name);
                     break;
-                }
             }
 
             return true;
@@ -96,6 +117,8 @@ namespace F35Conversion.Patches
         private static void CreateControlSurface(AeroController controller, Transform surface,
             AeroController.ControlSurfaceTransform toCopy)
         {
+            Debug.Log("Creating control surface for: " + surface.name);
+
             var newSurface = new AeroController.ControlSurfaceTransform
             {
                 transform = surface,
@@ -119,6 +142,8 @@ namespace F35Conversion.Patches
         private static AeroController.ControlSurfaceTransform[] AddItemToArray(
             AeroController.ControlSurfaceTransform[] original, AeroController.ControlSurfaceTransform itemToAdd)
         {
+            Debug.Log("Adding item to array: " + itemToAdd.transform.name);
+
             var finalArray =
                 new AeroController.ControlSurfaceTransform[original.Length + 1];
 
@@ -128,7 +153,6 @@ namespace F35Conversion.Patches
 
             return finalArray;
         }
-
 
         private static GameObject _fakeLeftCan;
         private static GameObject _fakeRightCan;

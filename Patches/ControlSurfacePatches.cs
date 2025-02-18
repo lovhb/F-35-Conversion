@@ -54,10 +54,10 @@ namespace F35Conversion.Patches
                         }
 
                         CreateControlSurface(
-                            VTAPI.GetPlayersVehicleGameObject().GetComponentInChildren<AeroController>(true),
+                            __instance.transform.GetComponentInParent<AeroController>(),
                             _fakeLeftCan.transform, __instance);
 
-                        var meshes = leftCanard.GetComponentsInChildren<MeshRenderer>();
+                        var meshes = leftCanard.GetComponentsInChildren<MeshRenderer>(true);
 
                         foreach (var mesh in meshes)
                         {
@@ -89,10 +89,10 @@ namespace F35Conversion.Patches
                         }
 
                         CreateControlSurface(
-                            VTAPI.GetPlayersVehicleGameObject().GetComponentInChildren<AeroController>(true),
+                            __instance.transform.GetComponentInParent<AeroController>(),
                             _fakeRightCan.transform, __instance);
 
-                        var meshes = rightCanard.GetComponentsInChildren<MeshRenderer>();
+                        var meshes = rightCanard.GetComponentsInChildren<MeshRenderer>(true);
 
                         foreach (var mesh in meshes)
                         {
@@ -133,6 +133,7 @@ namespace F35Conversion.Patches
 
             controller.controlSurfaces = AddItemToArray(controller.controlSurfaces, newSurface);
             controller.controlSurfaces[controller.controlSurfaces.Length - 1].Init();
+            controller.OnEnable();
         }
 
         private static AeroController.ControlSurfaceTransform[] AddItemToArray(

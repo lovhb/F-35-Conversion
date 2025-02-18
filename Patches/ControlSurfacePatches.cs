@@ -1,6 +1,5 @@
 ﻿using HarmonyLib;
 using UnityEngine;
-using VTOLAPI;
 
 namespace F35Conversion.Patches
 {

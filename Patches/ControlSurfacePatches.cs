@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using UnityEngine;
+using static F35Conversion.Logger;
 
 namespace F35Conversion.Patches
 {
@@ -8,24 +9,24 @@ namespace F35Conversion.Patches
     {
         static bool Prefix(AeroController.ControlSurfaceTransform __instance)
         {
-            Debug.Log("Prefix called for: " + __instance.transform.name);
+            Log("Prefix called for: " + __instance.transform.name);
 
             if (__instance.transform == null)
             {
-                Debug.Log("Transform is null");
+                Log("Transform is null");
                 return true;
             }
 
             var actor = __instance.transform.root.GetComponent<Actor>();
             if (actor == null)
             {
-                Debug.Log("Actor is null");
+                Log("Actor is null");
                 return true;
             }
 
             if (!actor.isPlayer && actor.team == Teams.Enemy)
             {
-                Debug.Log("Actor is not player and is enemy");
+                Log("Actor is not player and is enemy");
                 return true;
             }
 
@@ -33,7 +34,7 @@ namespace F35Conversion.Patches
             {
                 case "canardLeft":
                     {
-                        Debug.Log("Processing canardLeft");
+                        Log("Processing canardLeft");
                         var leftCanard = __instance.transform.parent;
 
                         _fakeLeftCan = GameObject.Instantiate(leftCanard.gameObject, leftCanard.parent, true);
@@ -63,12 +64,12 @@ namespace F35Conversion.Patches
                             mesh.enabled = false;
                         }
 
-                        Debug.Log("F35 - Copied left");
+                        Log("F35 - Copied left");
                         break;
                     }
                 case "canardRight":
                     {
-                        Debug.Log("Processing canardRight");
+                        Log("Processing canardRight");
                         var rightCanard = __instance.transform.parent;
 
                         _fakeRightCan = GameObject.Instantiate(rightCanard.gameObject, rightCanard.parent, true);
@@ -98,11 +99,11 @@ namespace F35Conversion.Patches
                             mesh.enabled = false;
                         }
 
-                        Debug.Log("F35 - Copied right");
+                        Log("F35 - Copied right");
                         break;
                     }
                 default:
-                    Debug.Log("Unhandled transform name: " + __instance.transform.name);
+                    LogWarn("Unhandled transform name: " + __instance.transform.name);
                     break;
             }
 
@@ -112,7 +113,7 @@ namespace F35Conversion.Patches
         private static void CreateControlSurface(AeroController controller, Transform surface,
             AeroController.ControlSurfaceTransform toCopy)
         {
-            Debug.Log("Creating control surface for: " + surface.name);
+            Log("Creating control surface for: " + surface.name);
 
             var newSurface = new AeroController.ControlSurfaceTransform
             {
@@ -138,7 +139,7 @@ namespace F35Conversion.Patches
         private static AeroController.ControlSurfaceTransform[] AddItemToArray(
             AeroController.ControlSurfaceTransform[] original, AeroController.ControlSurfaceTransform itemToAdd)
         {
-            Debug.Log("Adding item to array: " + itemToAdd.transform.name);
+            Log("Adding item to array: " + itemToAdd.transform.name);
 
             var finalArray =
                 new AeroController.ControlSurfaceTransform[original.Length + 1];
